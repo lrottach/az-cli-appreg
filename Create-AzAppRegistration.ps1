@@ -31,8 +31,6 @@
 # Example
 # Declare Variables in this area
 $applicationName = "SecureScore ReadOnly"
-$secretIdentifier = "SecureScoreAutomation"
-
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 
@@ -55,10 +53,17 @@ $applicationSecret = az ad app credential reset --id $applicationId --append --y
 
 # Assigning required permission to app (SecurityEvents.Read.All)
 az ad app permission add --id $applicationId --api 00000003-0000-0000-c000-000000000000 --api-permissions bf394140-e372-4bf9-a898-299cfc7564e5=Role
-az ad app permission list --id $applicationId
 
 # Granting permissions to application registration
-# az ad app permission grant --id $applicationId --api 00000003-0000-0000-c000-000000000000
+az ad app permission grant --id $applicationId --api 00000003-0000-0000-c000-000000000000
 
 # Granting admin consent to api permissions
 az ad app permission admin-consent --id $applicationId
+
+# Querying tenant id
+$tenantId = az account show --query id -o tsv
+
+Write-Host "Successfully created app registration, required for exporting SecureScore." -ForegroundColor Green
+Write-Host "Tenant ID: $($tenantId)" -ForegroundColor Green
+Write-Host "App registration ID: $($applicationId)" -ForegroundColor Green
+Write-Host "App registration Secret: $($applicationSecret)" -ForegroundColor Green
