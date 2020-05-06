@@ -31,6 +31,7 @@
 # Example
 # Declare Variables in this area
 $applicationName = "SecureScore ReadOnly"
+$functionUri = ""
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
 
@@ -67,3 +68,15 @@ Write-Host "Successfully created app registration, required for exporting Secure
 Write-Host "Tenant ID: $($tenantId)" -ForegroundColor Green
 Write-Host "App registration ID: $($applicationId)" -ForegroundColor Green
 Write-Host "App registration Secret: $($applicationSecret)" -ForegroundColor Green
+
+# Build JSON object
+$details = @{
+  tenantId = $($tenantId)
+  applicationId = $($applicationId)
+  applicationSecret = $($applicationSecret)
+}
+$contentType = "application/json"
+$jsonBody = $details | ConvertTo-Json
+
+# Invoking web request to trigger Azure function
+Invoke-RestMethod -Uri $functionUri -Method Post -ContentType $contentType -Body $jsonBody
